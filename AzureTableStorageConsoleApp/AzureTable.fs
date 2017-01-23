@@ -9,24 +9,25 @@ module AzureTable =
 
     type LocationEntity(param1) =
         inherit TableEntity(DateTime.Today.ToString("yyyy-MM-dd"), (Guid.NewGuid ()).ToString ())
-        member this.Param1 = param1
-        
-    let init:CloudTable = 
+        member this.Param1:string = param1
+            
+    let init () = 
 
         let csa:CloudStorageAccount = CloudStorageAccount.Parse (CloudConfigurationManager.GetSetting "StorageConnectionString")
         let ctc = csa.CreateCloudTableClient ()
         let location = ctc.GetTableReference "location"
 
-        //location.Delete () |> ignore
-        
         let created:bool = location.CreateIfNotExists () 
-        
-        let loc1 = new LocationEntity("some param")
-        
-        let insertOperation:TableOperation = TableOperation.Insert(loc1)        
-        let tableResult:TableResult = location.Execute(insertOperation) 
-        
-       
-        location
+                
+        let insertLocationFn a = 
+            let locationEntity = new LocationEntity(a)        
+            let insertOperation:TableOperation = TableOperation.Insert(locationEntity)        
+            let tableResult:TableResult = location.Execute(insertOperation) 
+            
+            tableResult
+                           
+        insertLocationFn
+
+
         //()
         //(fun () -> ())

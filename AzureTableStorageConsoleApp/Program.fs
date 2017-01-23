@@ -11,7 +11,8 @@ open AzureTableClient.AzureTable
 let main argv = 
     printfn "%A" argv
     
-    let x = init
+    let addDataFn = init () 
+    addDataFn "myTest7" |> ignore
     
     System.Console.ReadKey() |> ignore
     0 // return an integer exit code
